@@ -8,6 +8,7 @@
 #include <arpa/inet.h>
 
 #define CHECK_ERR(e) if(e==-1) printf("Error: %s\n",strerror(errno))
+
 #define MY_IP "192.168.43.231"
 #define YOUR_IP "192.168.43.42"
 

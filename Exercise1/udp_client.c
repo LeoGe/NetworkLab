@@ -9,6 +9,9 @@
 
 #define CHECK_ERR(d) if(d == -1) printf("Error: %s\n", strerror(errno))
 
+#define MY_IP "192.168.43.42"
+#define OTHER_IP "192.168.43.231"
+
 struct sockaddr_in create_addr(char* addr_str, unsigned short port) {
     struct sockaddr_in addr;
 
@@ -23,15 +26,12 @@ void main() {
     int sd = socket(AF_INET, SOCK_DGRAM, 0);
     CHECK_ERR(sd);
 
-    struct sockaddr_in myaddr = create_addr("192.168.1.9", 8000);
+    struct sockaddr_in myaddr = create_addr(MY_IP, 8000);
 
     int bind_sd = bind(sd, (struct sockaddr*)&myaddr, sizeof myaddr);
     CHECK_ERR(bind_sd);
 
-    int buf[1];
-    buf[0] = 42;
-
-    struct sockaddr_in addr = create_addr("192.168.1.7", 8000);
+    struct sockaddr_in addr = create_addr(OTHER_IP, 8000);
 
     char buf_in[256];
     char* b = buf_in;
@@ -43,15 +43,15 @@ void main() {
 
         b[read_in-1] = '\0';
 
-        printf("%s\n", b);
-
         sendto(sd, (void*) buf_in, read_in, 0, (struct sockaddr*)&addr, sizeof addr);
 
-        int nread = recv(sd, (void*) &buf, buf_size, 0);
+        if(strcmp(buf_in, "/q") == 0)
+            break;
 
-        printf("Got %i bytes: %s\n", nread, buf);
+        int nread = recv(sd, (void*) &buf_in, buf_size, 0);
+
+        printf("Got %i bytes: %s\n", nread, buf_in);
     }
-
 
     close(sd);
 }
