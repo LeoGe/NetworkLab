@@ -15,6 +15,7 @@
 void main() {
     int sd = socket(AF_INET, SOCK_DGRAM, 0);
     CHECK_ERR(sd);
+
     struct sockaddr_in addr;
     addr.sin_family = AF_INET;
     addr.sin_port = htons(8000);
